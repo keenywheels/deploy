@@ -1,50 +1,59 @@
 ---
-- name: Deploy nginx docker service
+- name: deploy nginx docker service
   hosts: all
   become: true
 
   vars:
-    app_dir: /opt/deploy
+    nginx_dir: /opt/deploy/nginx
 
   tasks:
-    - name: check deploy directory exists
+    - name: check nginx deploy directory exists
       ansible.builtin.file:
-        path: "{{ app_dir }}"
+        path: "{{ nginx_dir }}"
         state: directory
         mode: "0755"
 
-    - name: copy compose file
+    - name: copy nginx compose file
       ansible.builtin.copy:
-        src: ../apps/prod.yaml
-        dest: "{{ app_dir }}/prod.yaml"
+        src: ../apps/nginx/compose.yaml
+        dest: "{{ nginx_dir }}/compose.yaml"
         mode: "0644"
+      register: compose_copy
 
-    - name: copy nginx configs recursively
+    - name: copy nginx main config
+      ansible.builtin.copy:
+        src: ../apps/nginx/nginx.conf
+        dest: "{{ nginx_dir }}/nginx.conf"
+        mode: "0644"
+      register: nginx_conf_copy
+
+    - name: copy nginx conf.d directory
       ansible.builtin.synchronize:
-        src: ../apps/nginx/
-        dest: "{{ app_dir }}/nginx/"
+        src: ../apps/nginx/conf.d/
+        dest: "{{ nginx_dir }}/conf.d/"
         recursive: yes
-      register: nginx_sync
-
-    - name: pull latest images
-      ansible.builtin.command:
-        chdir: "{{ app_dir }}"
-        cmd: docker compose -f prod.yaml pull
+      register: nginx_conf_d_sync
 
     - name: validate nginx config
       ansible.builtin.command:
-        chdir: "{{ app_dir }}"
-        cmd: docker compose -f prod.yaml run --rm front-nginx nginx -t
+        chdir: "{{ nginx_dir }}"
+        cmd: docker compose -f compose.yaml run --rm front-nginx nginx -t
       register: nginx_test
       ignore_errors: true
 
-    - name: fail if nginx config test failed
+    - name: fail if nginx config is invalid
       ansible.builtin.fail:
         msg: "nginx config test failed: {{ nginx_test.stderr }}"
       when: nginx_test.rc != 0
 
-    - name: reload nginx inside container if configs changed
+    - name: apply nginx compose changes if compose.yaml changed
       ansible.builtin.command:
-        chdir: "{{ app_dir }}"
-        cmd: docker compose -f prod.yaml exec front-nginx nginx -s reload
-      when: nginx_sync.changed
+        chdir: "{{ nginx_dir }}"
+        cmd: docker compose -f compose.yaml up -d
+      when: compose_copy.changed
+
+    - name: reload nginx if configs changed
+      ansible.builtin.command:
+        chdir: "{{ nginx_dir }}"
+        cmd: docker compose -f compose.yaml exec front-nginx nginx -s reload
+      when: nginx_conf_copy.changed or nginx_conf_d_sync.changed
