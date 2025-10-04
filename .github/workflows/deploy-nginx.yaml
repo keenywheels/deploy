@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - 'apps/nginx/**'
-      - 'playbooks/deploy-nginx.yml'
+      - 'playbooks/deploy-nginx.yaml'
 
   workflow_dispatch:
 
