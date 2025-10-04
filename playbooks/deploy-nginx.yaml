@@ -1,0 +1,50 @@
+---
+- name: Deploy nginx docker service
+  hosts: all
+  become: true
+
+  vars:
+    app_dir: /opt/deploy
+
+  tasks:
+    - name: check deploy directory exists
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: copy compose file
+      ansible.builtin.copy:
+        src: ../apps/prod.yaml
+        dest: "{{ app_dir }}/prod.yaml"
+        mode: "0644"
+
+    - name: copy nginx configs recursively
+      ansible.builtin.synchronize:
+        src: ../apps/nginx/
+        dest: "{{ app_dir }}/nginx/"
+        recursive: yes
+      register: nginx_sync
+
+    - name: pull latest images
+      ansible.builtin.command:
+        chdir: "{{ app_dir }}"
+        cmd: docker compose -f prod.yaml pull
+
+    - name: validate nginx config
+      ansible.builtin.command:
+        chdir: "{{ app_dir }}"
+        cmd: docker compose -f prod.yaml run --rm front-nginx nginx -t
+      register: nginx_test
+      ignore_errors: true
+
+    - name: fail if nginx config test failed
+      ansible.builtin.fail:
+        msg: "nginx config test failed: {{ nginx_test.stderr }}"
+      when: nginx_test.rc != 0
+
+    - name: reload nginx inside container if configs changed
+      ansible.builtin.command:
+        chdir: "{{ app_dir }}"
+        cmd: docker compose -f prod.yaml exec front-nginx nginx -s reload
+      when: nginx_sync.changed
