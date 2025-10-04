@@ -1,0 +1,42 @@
+---
+- name: deploy front
+  hosts: all
+  become: true
+
+  vars:
+    front_dist: "{{ lookup('env','VIXAR_DIST_PATH') | default(playbook_dir + '/../../front/dist', true) }}"
+    deploy_dir: /opt/deploy/dist
+    backup_dir: /opt/deploy/dist_backup
+
+  tasks:
+    - name: ensure deploy directory exists
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: backup current frontend (if exists)
+      ansible.builtin.shell: |
+        if [ -d "{{ deploy_dir }}" ]; then
+          rm -rf "{{ backup_dir }}"
+          mv "{{ deploy_dir }}" "{{ backup_dir }}"
+        fi
+      args:
+        executable: /bin/bash
+
+    - name: copy frontend dist to server
+      ansible.builtin.synchronize:
+        src: "{{ front_dist }}/"
+        dest: "{{ deploy_dir }}/"
+        recursive: yes
+        delete: yes
+        rsync_opts:
+          - "--chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r"
+
+    - name: set permissions for frontend files
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: yes
