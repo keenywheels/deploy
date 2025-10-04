@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   front-nginx:
@@ -9,5 +9,5 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
