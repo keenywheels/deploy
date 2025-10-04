@@ -33,7 +33,7 @@
         chdir: "{{ app_dir }}"
         cmd: docker compose -f compose.yaml pull
 
-    - name: apply compose changes if compose.yaml changed
+    - name: apply compose changes if compose changed
       ansible.builtin.shell: |
         docker rm -f {{ nginx_service }} || true
         docker compose -f compose.yaml up -d
@@ -54,7 +54,7 @@
         msg: "nginx config test failed: {{ nginx_test.stderr }}"
       when: nginx_sync.changed and nginx_test.rc != 0
 
-    - name: reload nginx inside container if configs changed and compose.yaml did NOT change
+    - name: reload nginx inside container if nginx configs changed
       ansible.builtin.command:
         chdir: "{{ app_dir }}"
         cmd: docker compose -f compose.yaml exec {{ nginx_service }} nginx -s reload
