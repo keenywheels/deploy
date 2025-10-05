@@ -2,9 +2,17 @@
 
 Интрумент для деплоя сервиса [vixar.tech](https://vixar.tech)
 
-### Зависимости
+### Настройка
 
-- _ansible_ - `sudo apt install ansible -y`
+1. Устновить _ansible_: `sudo apt install ansible -y`
+2. Положить ключ `vixar.pem` в директорию `~/.ssh/`
+3. Добавить в файл `~/.ssh/config` хост:
+```sh
+Host vixar
+  User ubuntu
+  Hostname vixar.tech
+  IdentityFile ~/.ssh/vixar.pem
+```
 
 ### Команды
 
