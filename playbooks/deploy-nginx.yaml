@@ -4,33 +4,33 @@
   become: true
 
   vars:
-    app_dir: /opt/deploy/nginx
+    nginx_dir: /opt/deploy/nginx
     nginx_service: front-nginx
 
   tasks:
     - name: check deploy directory exists
       ansible.builtin.file:
-        path: "{{ app_dir }}"
+        path: "{{ nginx_dir }}"
         state: directory
         mode: "0755"
 
     - name: copy compose file
       ansible.builtin.copy:
         src: ../apps/nginx/compose.yaml
-        dest: "{{ app_dir }}/compose.yaml"
+        dest: "{{ nginx_dir }}/compose.yaml"
         mode: "0644"
       register: compose_copy
 
     - name: copy nginx configs recursively
       ansible.builtin.synchronize:
         src: ../apps/nginx/
-        dest: "{{ app_dir }}/"
+        dest: "{{ nginx_dir }}/"
         recursive: yes
       register: nginx_sync
 
     - name: pull latest images
       ansible.builtin.command:
-        chdir: "{{ app_dir }}"
+        chdir: "{{ nginx_dir }}"
         cmd: docker compose -f compose.yaml pull
 
     - name: apply compose changes if compose changed
@@ -38,12 +38,12 @@
         docker rm -f {{ nginx_service }} || true
         docker compose -f compose.yaml up -d
       args:
-        chdir: "{{ app_dir }}"
+        chdir: "{{ nginx_dir }}"
       when: compose_copy.changed
 
     - name: validate nginx config
       ansible.builtin.command:
-        chdir: "{{ app_dir }}"
+        chdir: "{{ nginx_dir }}"
         cmd: docker compose -f compose.yaml run --rm {{ nginx_service }} nginx -t
       register: nginx_test
       ignore_errors: true
@@ -56,6 +56,6 @@
 
     - name: reload nginx inside container if nginx configs changed
       ansible.builtin.command:
-        chdir: "{{ app_dir }}"
+        chdir: "{{ nginx_dir }}"
         cmd: docker compose -f compose.yaml exec {{ nginx_service }} nginx -s reload
       when: nginx_sync.changed and not compose_copy.changed

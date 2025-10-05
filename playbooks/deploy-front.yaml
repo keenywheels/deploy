@@ -7,6 +7,8 @@
     front_dist: "{{ lookup('env','VIXAR_DIST_PATH') | default(playbook_dir + '/../../front/dist', true) }}"
     deploy_dir: /opt/deploy/dist
     backup_dir: /opt/deploy/dist_backup
+    nginx_dir: /opt/deploy/nginx
+    nginx_service: front-nginx
 
   tasks:
     - name: ensure deploy directory exists
@@ -40,3 +42,8 @@
         owner: www-data
         group: www-data
         recurse: yes
+
+    - name: restart nginx
+      ansible.builtin.command:
+        chdir: "{{ nginx_dir }}"
+        cmd: docker compose -f compose.yaml restart {{ nginx_service }}
