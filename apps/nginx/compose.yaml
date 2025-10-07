@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   front-nginx:
     image: nginx:1.29.1
@@ -15,3 +13,9 @@ services:
       - /opt/deploy/nginx/certbot:/var/www/certbot
       - /etc/letsencrypt:/etc/letsencrypt
       - /opt/deploy/dist:/var/www/dist
+    networks:
+      - vixar-net
+
+networks:
+  vixar-net:
+    external: true

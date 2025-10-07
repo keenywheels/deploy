@@ -1,0 +1,17 @@
+services:
+  vixarapi:
+    image: daronenko/vixarapi:5315fe06
+    container_name: vixarapi
+    restart: always
+    ports:
+      - '8000:8000'
+    volumes:
+      - /opt/deploy/vixarapi/configs:/vixarapi/configs
+      - /opt/deploy/vixarapi/log:/vixarapi/log
+    command: ./vixarapi --config configs/vixarapi.yaml
+    networks:
+      - vixar-net
+
+networks:
+  vixar-net:
+    external: true
