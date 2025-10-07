@@ -1,12 +1,12 @@
-name: deploy nginx
+name: deploy vixarapi
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'apps/nginx/**'
-      - 'playbooks/deploy-nginx.yaml'
+      - 'apps/vixarapi/**'
+      - 'playbooks/deploy-vixarapi.yaml'
 
   workflow_dispatch:
 
@@ -16,6 +16,8 @@ jobs:
 
     env:
       ANSIBLE_HOST_KEY_CHECKING: False
+      DOCKER_HUB_USER: daronenko
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
     steps:
       - name: checkout repository
@@ -36,5 +38,5 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
 
-      - name: deploy nginx
-        run: make play-deploy-nginx
+      - name: deploy vixarapi
+        run: make play-deploy-vixarapi

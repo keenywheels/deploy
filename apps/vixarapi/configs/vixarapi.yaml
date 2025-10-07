@@ -1,0 +1,19 @@
+app:
+  http:
+    port: "8000"
+  cors:
+    allow_origins: ["https://vixar.tech"]
+    allow_credentials: true
+    max_age: 24h
+  logger:
+    loglvl: info
+    mode: production
+    encoding: console
+
+postgres:
+  host: localhost
+  port: 5432
+  user: user
+  password: password
+  database: db
+  sslmode: disable
