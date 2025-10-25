@@ -1,0 +1,93 @@
+- name: deploy {{ app_name }}
+  hosts: "{{ target_hosts | default('all') }}"
+
+  vars:
+    apps_dir: "/opt/apps"
+    app_user: "deploy"
+    app_dir: "/opt/apps/{{ app_name }}"
+    network_name: "{{ app_name }}-net"
+
+  tasks:
+    - name: load base vars
+      include_vars:
+        file: "../apps/{{ app_name }}/vars/base.yaml"
+        name: base_vars
+
+    - name: load release vars
+      include_vars:
+        file: "../apps/{{ app_name }}/vars/release.yaml"
+        name: release_vars
+
+    - name: merge vars
+      set_fact:
+        app: "{{ base_vars.app | combine(release_vars.app | default({}), recursive=True) }}"
+
+    - name: create app user
+      become: yes
+      user:
+        name: "{{ app_user }}"
+        state: present
+        system: yes
+        shell: /bin/bash
+
+    - name: create app network
+      community.docker.docker_network:
+        name: "{{ network_name }}"
+        driver: bridge
+        state: present
+
+    - name: create app dir
+      become: yes
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+      loop:
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/configs"
+        - "{{ app_dir }}/deploy"
+        - "{{ app_dir }}/data"
+
+    - name: render config templates
+      become: yes
+      template:
+        src: "{{ item }}"
+        dest: "{{ app_dir }}/configs/{{ item | basename | replace('.j2','') }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0644'
+      loop: "{{ lookup('pipe', 'find ../apps/' + app_name + '/configs -type f') | split('\n') }}"
+      register: templates_changed
+      notify: restart_handler
+
+    - name: render deploy templates
+      become: yes
+      template:
+        src: "{{ item }}"
+        dest: "{{ app_dir }}/deploy/{{ item | basename | replace('.j2','') }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0644'
+      loop: "{{ lookup('pipe', 'find ../apps/' + app_name + '/deploy -type f') | split('\n') }}"
+      register: deploy_templates_changed
+      notify: recreate_handler
+
+  handlers:
+    - name: restart_handler
+      community.docker.docker_compose_v2:
+        project_src: "{{ app_dir }}/deploy"
+        project_name: "{{ app_name }}"
+        state: restarted
+
+    - name: recreate_handler
+      community.docker.docker_compose_v2:
+        project_src: "{{ app_dir }}/deploy"
+        project_name: "{{ app_name }}"
+        pull: always
+        recreate: auto
+        remove_orphans: yes
+        state: present
+      environment:
+        COMPOSE_HTTP_TIMEOUT: 60

@@ -5,8 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'apps/nginx/**'
-      - 'playbooks/deploy-nginx.yaml'
+      - '../../apps/front-nginx/**'
 
   workflow_dispatch:
 
@@ -36,5 +35,5 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
 
-      - name: deploy nginx
-        run: make play-deploy-nginx
+      - name: deploy front nginx
+        run: make deploy-front-nginx

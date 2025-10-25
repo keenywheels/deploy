@@ -11,3 +11,6 @@ play-%:
 
 play-deploy-vixarapi:
 	ansible-playbook playbooks/deploy-vixarapi.yaml
+
+deploy-%:
+	ansible-playbook playbooks/deploy-app.yaml -e "app_name=$*"

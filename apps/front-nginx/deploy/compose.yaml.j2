@@ -1,0 +1,25 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /opt/apps/{{ app.name }}/configs/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/apps/{{ app.name }}/configs/default.conf:/etc/nginx/conf.d/default.conf
+      - /opt/apps/{{ app.name }}/data/logs:/var/log/nginx
+      - /opt/apps/{{ app.name }}/data/certbot:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /opt/apps/dist:/var/www/dist
+    networks:
+      - {{ app.name }}-net
+      - vixarapi-net
+
+
+networks:
+  {{ app.name }}-net:
+    external: true
+  vixarapi-net:
+    external: true
