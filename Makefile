@@ -9,5 +9,10 @@ ping:
 play-%:
 	ansible-playbook playbooks/$*.yaml
 
-play-deploy-vixarapi:
-	ansible-playbook playbooks/deploy-vixarapi.yaml
+deploy-%:
+	ansible-playbook playbooks/deploy-app.yaml -e "app_name=$*"
+
+app-%:
+	mkdir -p apps/$*/{configs,deploy,vars}
+	touch apps/$*/deploy/compose.yaml.j2 apps/$*/configs/config.yaml.j2
+	touch apps/$*/vars/{base,release}.yaml

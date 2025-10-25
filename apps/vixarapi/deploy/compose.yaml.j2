@@ -1,0 +1,18 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    ports:
+      - '8000:8000'
+    volumes:
+      - /opt/apps/{{ app.name }}/configs:/vixarapi/configs
+      - /opt/apps/{{ app.name }}/log:/vixarapi/log
+    command: ./vixarapi --config configs/vixarapi.yaml
+    networks:
+      - vixarapi-net
+
+
+networks:
+  {{ app.name }}-net:
+    external: true

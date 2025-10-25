@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - 'apps/vixarapi/**'
-      - 'playbooks/deploy-vixarapi.yaml'
 
   workflow_dispatch:
 
@@ -39,4 +38,4 @@ jobs:
           ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
 
       - name: deploy vixarapi
-        run: make play-deploy-vixarapi
+        run: make deploy-vixarapi

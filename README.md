@@ -18,12 +18,11 @@ Host vixar
 
 - `make ping` - пингануть каждый хост из списка `inventory/hosts.ini`
 - `make play-<playbook>` - запустить playbook из директории `playbooks/`
+- `make app-<app>` - создать новый app
 
 ### Доступные playbook'и
 
-- `deploy-nginx` - обновить конфиг nginx на сервере. Можно обновлять как сервис `front-nginx` в `apps/nginx/compose.yaml`, так и конфиги самого nginx `apps/nginx` 
-- `deploy-front` - загрузить `dist/` фронтенда на сервер (путь до `dist/` указан в переменной окружения `VIXAR_DIST_PATH`, которая по умолчанию равна `../front/dist`), поэтому сначала нужно собрать фронт командой `bun run build` в репозиторияя фронтенда
-- `deploy-vixarapi` - обновить образ или конфиг бэкенда
+- `deploy-<app>` - развернуть или обновить `apps/<app>` на сервере
 - `install-docker` - установить _docker_ и _docker compose_ на сервер
 - `setup-ssl` - настраивает https для домена с помощью let's encrypt и автоматически обновляет сертификаты. Проверка сертификатов происходит раз в сутки в 3 часа ночи 
 

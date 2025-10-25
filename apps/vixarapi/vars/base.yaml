@@ -1,0 +1,5 @@
+app:
+  name: vixarapi
+  image:
+    name: daronenko/vixarapi
+    tag: 5315fe06
