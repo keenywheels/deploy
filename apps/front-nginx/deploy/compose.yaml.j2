@@ -12,13 +12,15 @@ services:
       - /opt/apps/{{ app.name }}/data/logs:/var/log/nginx
       - /opt/apps/{{ app.name }}/data/certbot:/var/www/certbot
       - /etc/letsencrypt:/etc/letsencrypt
-      - /opt/apps/dist:/var/www/dist
     networks:
       - {{ app.name }}-net
       - vixarapi-net
+      - vixar-frontend-net
 
 networks:
   {{ app.name }}-net:
     external: true
   vixarapi-net:
+    external: true
+  vixar-frontend-net:
     external: true

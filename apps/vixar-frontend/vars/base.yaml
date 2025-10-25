@@ -1,0 +1,5 @@
+app:
+  name: vixar-frontend
+  image:
+    name: daronenko/vixar-frontend
+    tag: 2416451d
