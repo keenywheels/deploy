@@ -16,9 +16,12 @@ services:
     networks:
       - {{ app.name }}-net
       - vixarapi-net
+      - vixar-frontend-net
 
 networks:
   {{ app.name }}-net:
     external: true
   vixarapi-net:
+    external: true
+  vixar-frontend-net:
     external: true
