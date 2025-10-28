@@ -18,9 +18,21 @@
         file: "../apps/{{ app_name }}/vars/release.yaml"
         name: release_vars
 
+    - name: load vault vars (optional)
+      include_vars:
+        file: "../apps/{{ app_name }}/vars/vault.yaml"
+        name: vault_vars
+      ignore_errors: yes
+
     - name: merge vars
       set_fact:
-        app: "{{ base_vars.app | combine(release_vars.app | default({}), recursive=True) }}"
+        app: >-
+          {{
+            base_vars.app
+            | combine(group_vars.app | default({}), recursive=True)
+            | combine(vault_vars.app | default({}), recursive=True)
+            | combine(release_vars.app | default({}), recursive=True)
+          }}
 
     - name: create app user
       become: yes

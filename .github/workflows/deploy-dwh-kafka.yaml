@@ -1,11 +1,11 @@
-name: deploy vixarapi
+name: deploy dwh kafka
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'apps/vixarapi/**'
+      - 'apps/dwh-kafka/**'
 
   workflow_dispatch:
 
@@ -39,5 +39,5 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
 
-      - name: deploy vixarapi
-        run: make deploy-vixarapi
+      - name: deploy dwh kafka
+        run: make deploy-dwh-kafka

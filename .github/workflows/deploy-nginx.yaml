@@ -15,6 +15,7 @@ jobs:
 
     env:
       ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
 
     steps:
       - name: checkout repository

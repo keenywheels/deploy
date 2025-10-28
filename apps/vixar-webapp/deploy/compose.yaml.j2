@@ -1,0 +1,19 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    ports:
+      - "{{ app.port }}:{{ app.port }}"
+    volumes:
+      - /opt/apps/{{ app.name }}/configs/webapp.yaml:/webapp/configs/webapp.yaml:ro
+    command: ./webapp --config /webapp/configs/webapp.yaml
+    networks:
+      - {{ app.name }}-net
+      - dwh-kafka-net
+
+networks:
+  {{ app.name }}-net:
+    external: true
+  dwh-kafka-net:
+    external: true

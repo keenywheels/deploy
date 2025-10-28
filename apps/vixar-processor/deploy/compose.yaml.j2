@@ -1,0 +1,19 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    mem_limit: 512m
+    cpus: 0.5
+    volumes:
+      - /opt/apps/{{ app.name }}/configs/processor.yaml:/processor/configs/processor.yaml:ro
+    command: ./processor --config /processor/configs/processor.yaml
+    networks:
+      - {{ app.name }}-net
+      - dwh-kafka-net
+
+networks:
+  {{ app.name }}-net:
+    external: true
+  dwh-kafka-net:
+    external: true

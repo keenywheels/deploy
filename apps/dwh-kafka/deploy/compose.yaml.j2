@@ -1,0 +1,69 @@
+services:
+  {{ app.kafka.name }}:
+    container_name: {{ app.kafka.name }}
+    image: {{ app.kafka.image.name }}:{{ app.kafka.image.tag }}
+    hostname: {{ app.kafka.name }}
+    restart: always
+    mem_limit: 512m
+    cpus: 0.5
+    ports:
+      - {{ app.kafka.ports.exposed }}:{{ app.kafka.ports.exposed }}
+    environment:
+      CLUSTER_ID: {{ app.kafka.cluster_id }}
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: {{ app.kafka.process_roles }}
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:{{ app.kafka.ports.controller }}
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LISTENERS: CONTROLLER://localhost:{{ app.kafka.ports.controller }},HOST://0.0.0.0:{{ app.kafka.ports.exposed }}, DOCKER://0.0.0.0:{{ app.kafka.ports.docker }}
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:{{ app.kafka.ports.exposed }},DOCKER://{{ app.kafka.name }}:{{ app.kafka.ports.docker }}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,HOST:PLAINTEXT,DOCKER:PLAINTEXT
+    healthcheck:
+      test: kafka-broker-api-versions --bootstrap-server localhost:{{ app.kafka.ports.exposed }} || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - {{ app.name }}-net
+
+  {{ app.kafka_ui.name }}:
+    container_name: {{ app.kafka_ui.name }}
+    image: {{ app.kafka_ui.image.name }}:{{ app.kafka_ui.image.tag }}
+    restart: always
+    depends_on:
+      {{ app.kafka.name }}:
+        condition: service_healthy
+    ports:
+      - {{ app.kafka_ui.port }}:{{ app.kafka_ui.port }}
+    environment:
+      SERVER_PORT: {{ app.kafka_ui.port }}
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: {{ app.kafka.name }}:{{ app.kafka.ports.docker }}
+      AUTH_TYPE: "LOGIN_FORM"
+      SPRING_SECURITY_USER_NAME: {{ app.kafka_ui.username }}
+      SPRING_SECURITY_USER_PASSWORD: {{ app.kafka_ui.password }}
+    networks:
+      - {{ app.name }}-net
+
+  # create topic and test messages
+  {{ app.init_kafka.name }}:
+    container_name: {{ app.init_kafka.name }}
+    image: {{ app.kafka.image.name }}:{{ app.kafka.image.tag }}
+    restart: no
+    depends_on:
+      {{ app.kafka.name }}:
+        condition: service_healthy
+    environment:
+      - KAFKA_HOSTNAME={{ app.kafka.name }}
+      - KAFKA_DOCKER_PORT={{ app.kafka.ports.docker }}
+      - KAFKA_SCRAPER_TOPIC={{ app.kafka.topics.scraper }}
+    volumes:
+      - /opt/apps/{{ app.name }}/configs/init_kafka.sh:/tmp/init_kafka.sh:ro
+    entrypoint: ['/bin/bash', '/tmp/init_kafka.sh']
+    networks:
+      - {{ app.name }}-net
+
+networks:
+  {{ app.name }}-net:
+    external: true
