@@ -11,10 +11,10 @@ services:
     command: ./processor --config /processor/configs/processor.yaml
     networks:
       - {{ app.name }}-net
-      - dwh-kafka-net
+      - kafka-net
 
 networks:
   {{ app.name }}-net:
     external: true
-  dwh-kafka-net:
+  kafka-net:
     external: true
