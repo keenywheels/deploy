@@ -8,6 +8,7 @@ services:
     volumes:
       - /opt/apps/{{ app.name }}/configs:/vixarapi/configs
       - /opt/apps/{{ app.name }}/log:/vixarapi/log
+      - /var/log/{{ app.name }}:/{{ app.name }}/log
     command: ./vixarapi --config configs/vixarapi.yaml
     networks:
       - {{ app.name }}-net

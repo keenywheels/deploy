@@ -7,6 +7,7 @@ services:
     cpus: 0.5
     volumes:
       - /opt/apps/{{ app.name }}/configs/processor.yaml:/processor/configs/processor.yaml:ro
+      - /var/log/{{ app.name }}:/{{ app.name }}/log
     command: ./processor --config /processor/configs/processor.yaml
     networks:
       - {{ app.name }}-net

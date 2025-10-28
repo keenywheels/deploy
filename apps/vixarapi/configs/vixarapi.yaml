@@ -8,7 +8,7 @@ app:
   logger:
     loglvl: info
     mode: production
-    encoding: console
+    encoding: json
 
 postgres:
   host: localhost

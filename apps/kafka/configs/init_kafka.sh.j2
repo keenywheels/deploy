@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+# create kafka topic
+echo -e 'Creating kafka topics'
+kafka-topics --bootstrap-server {{ app.kafka.name }}:{{ app.kafka.ports.docker }} --create --if-not-exists --topic {{ app.kafka.topics.scraper }} --replication-factor 1 --partitions 1
+
+echo -e 'Successfully created the following topics:'
+kafka-topics --bootstrap-server {{ app.kafka.name }}:{{ app.kafka.ports.docker }} --list

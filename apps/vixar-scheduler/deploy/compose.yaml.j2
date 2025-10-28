@@ -9,6 +9,7 @@ services:
       - "{{ app.port }}:{{ app.port }}"
     volumes:
       - /opt/apps/{{ app.name }}/configs/scheduler.yaml:/scheduler/configs/scheduler.yaml:ro
+      - /var/log/{{ app.name }}:/{{ app.name }}/log
     command: ./scheduler --config /scheduler/configs/scheduler.yaml
     networks:
       - {{ app.name }}-net
