@@ -4,7 +4,7 @@ app:
     name: daronenko/vixar-processor
     tag: 2e897910
   kafka:
-    hostname: dwh-kafka
+    hostname: kafka
     port: 9093
     group_id: vixar_processor
     topic: scraper_data

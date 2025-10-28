@@ -6,5 +6,5 @@ app:
   port: 8009
   kafka:
     brokers:
-      - dwh-kafka:9093
+      - kafka:9093
     topic: scraper_data
