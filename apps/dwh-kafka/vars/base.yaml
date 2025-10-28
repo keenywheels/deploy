@@ -1,0 +1,23 @@
+app:
+  name: dwh-kafka
+  kafka:
+    name: dwh-kafka
+    image:
+      name: confluentinc/cp-kafka
+      tag: 7.8.0
+    cluster_id: DnYp3Yv0TqK3f7lS0BqgVQ
+    ports:
+      exposed: 9092
+      docker: 9093
+      controller: 9091
+    topics:
+      scraper: scraper_data
+    process_roles: broker,controller
+  kafka_ui:
+    name: dwh-kafka-ui
+    image:
+      name: provectuslabs/kafka-ui
+      tag: latest
+    port: 9090
+  init_kafka:
+    name: init-kafka

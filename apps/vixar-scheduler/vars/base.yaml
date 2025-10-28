@@ -1,0 +1,10 @@
+app:
+  name: vixar-scheduler
+  image:
+    name: daronenko/vixar-scheduler
+    tag: b492bfc2
+  port: 8009
+  kafka:
+    brokers:
+      - dwh-kafka:9093
+    topic: scraper_data

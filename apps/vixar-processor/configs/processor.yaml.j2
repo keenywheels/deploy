@@ -1,0 +1,16 @@
+app:
+  processor:
+    workers_count: 10
+    max_retries: 2
+    retry_delay: 10s
+  logger:
+    loglvl: info
+    mode: production
+    encoding: console
+
+kafka:
+  group_id: "{{ app.kafka.group_id }}"
+  brokers:
+    - {{ app.kafka.hostname }}:{{ app.kafka.port }}
+  topics:
+    scraper_data: "{{ app.kafka.topic }}"
