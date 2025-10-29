@@ -1,0 +1,5 @@
+app:
+  name: vixar-ssr-scheduler
+  image:
+    name: daronenko/vixar-ssr-scheduler
+    tag: dbe46d3c
