@@ -2,4 +2,4 @@ app:
   name: vixar-spa-scheduler
   image:
     name: daronenko/vixar-spa-scheduler
-    tag: b8877a1c
+    tag: 288fe6f1
