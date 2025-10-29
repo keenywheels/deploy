@@ -1,0 +1,16 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    mem_limit: 512m
+    cpus: 1
+    networks:
+      - {{ app.name }}-net
+      - kafka-net
+
+networks:
+  {{ app.name }}-net:
+    external: true
+  kafka-net:
+    external: true
