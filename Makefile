@@ -1,8 +1,9 @@
 SHELL := /bin/bash
 
 ifneq (,$(wildcard .env))
-    include .env
-    export
+  $(info loading environment variables from .env)
+  include .env
+  export
 endif
 
 .PHONY: ping
@@ -24,3 +25,11 @@ app-%:
 	mkdir -p apps/$*/{configs,deploy,vars}
 	touch apps/$*/deploy/compose.yaml.j2 apps/$*/configs/config.yaml.j2
 	touch apps/$*/vars/{base,release}.yaml
+
+.PHONY: app-encrypt-%
+app-encrypt-%:
+	ansible-vault encrypt apps/$*/vars/vault.yaml
+
+.PHONY: app-decrypt-%
+app-decrypt-%:
+	ansible-vault decrypt apps/$*/vars/vault.yaml
