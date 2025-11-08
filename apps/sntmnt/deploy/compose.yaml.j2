@@ -1,0 +1,14 @@
+services:
+  {{ app.name }}:
+    image: {{ app.image.name }}:{{ app.image.tag }}
+    container_name: {{ app.name }}
+    restart: always
+    ports:
+      - '9999:9999'
+    command: python main.py
+    networks:
+      - {{ app.name }}-net
+
+networks:
+  {{ app.name }}-net:
+    external: true
