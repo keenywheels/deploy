@@ -1,0 +1,8 @@
+app:
+  name: postgres
+  postgres:
+    name: postgres
+    image:
+      name: postgres
+      tag: 17
+    port: 5432

@@ -1,0 +1,27 @@
+services:
+  {{ app.postgres.name }}:
+    container_name: {{ app.postgres.name }}
+    image: {{ app.postgres.image.name }}:{{ app.postgres.image.tag }}
+    hostname: {{ app.postgres.name }}
+    restart: always
+    ports:
+      - "{{ app.postgres.port }}:{{ app.postgres.port }}"
+    environment:
+      POSTGRES_USER: {{ app.postgres.auth.user }}
+      POSTGRES_PASSWORD: {{ app.postgres.auth.password }}
+      POSTGRES_DB: {{ app.postgres.auth.db }}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ app.postgres.auth.user }} -d {{ app.postgres.auth.db }}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+networks:
+  {{ app.name }}-net:
+    external: true
+
+volumes:
+  pgdata:

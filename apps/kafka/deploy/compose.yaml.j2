@@ -24,6 +24,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     networks:
       - {{ app.name }}-net
 
@@ -46,7 +48,7 @@ services:
     networks:
       - {{ app.name }}-net
 
-  # create topic and test messages
+  # create topic
   {{ app.init_kafka.name }}:
     container_name: {{ app.init_kafka.name }}
     image: {{ app.kafka.image.name }}:{{ app.kafka.image.tag }}
@@ -67,3 +69,6 @@ services:
 networks:
   {{ app.name }}-net:
     external: true
+
+volumes:
+  kafka-data:

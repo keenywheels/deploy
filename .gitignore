@@ -1,4 +1,5 @@
 .env
+.vault_pwd
 
 .idea/
 .DS_Store
