@@ -17,7 +17,8 @@ play-%:
 .PHONY: deploy-%
 deploy-%:
 	ansible-playbook playbooks/deploy-app.yaml \
-		-e "app_name=$*"
+		-e "app_name=$*" \
+		--vault-password-file <(echo "$$ANSIBLE_VAULT_PASSWORD")
 
 .PHONY: app-%
 app-%:
@@ -27,8 +28,10 @@ app-%:
 
 .PHONY: app-encrypt-%
 app-encrypt-%:
-	ansible-vault encrypt apps/$*/vars/vault.yaml
+	ansible-vault encrypt apps/$*/vars/vault.yaml \
+		--vault-password-file <(echo "$$ANSIBLE_VAULT_PASSWORD")
 
 .PHONY: app-decrypt-%
 app-decrypt-%:
-	ansible-vault decrypt apps/$*/vars/vault.yaml
+	ansible-vault decrypt apps/$*/vars/vault.yaml \
+		--vault-password-file <(echo "$$ANSIBLE_VAULT_PASSWORD")
