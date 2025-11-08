@@ -1,0 +1,43 @@
+name: deploy sntmnt
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'apps/sntmnt/**'
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+
+      DOCKER_HUB_USER: daronenko
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: install ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: add ssh key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
+
+      - name: deploy sntmnt
+        run: make deploy-sntmnt
