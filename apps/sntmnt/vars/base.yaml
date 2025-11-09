@@ -3,3 +3,4 @@ app:
   image:
     name: daronenko/sntmnt
     tag: ab9463ac
+  port: 9999

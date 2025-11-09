@@ -4,7 +4,7 @@ services:
     container_name: {{ app.name }}
     restart: always
     ports:
-      - '9999:9999'
+      - '{{ app.port }}:{{ app.port }}'
     command: python main.py
     networks:
       - {{ app.name }}-net
