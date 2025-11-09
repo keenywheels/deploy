@@ -3,7 +3,7 @@ services:
     image: {{ app.image.name }}:{{ app.image.tag }}
     container_name: {{ app.name }}
     restart: always
-    mem_limit: 512m
+    mem_limit: 1g
     cpus: 0.5
     volumes:
       - /opt/apps/{{ app.name }}/configs/processor.yaml:/processor/configs/processor.yaml:ro
