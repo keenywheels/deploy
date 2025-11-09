@@ -1,12 +1,10 @@
 app:
   http:
-    port: "{{ app.port }}"
+    port: {{ app.http.port }}
   logger:
     loglvl: info
     mode: production
     encoding: json
   s2s:
-    header: X-Server-Side-Token
-    clients:
-      - name: vixarapi
-        token: devVixarApiToken
+    header: {{ app.s2s.header }}
+    clients: {{ app.s2s.clients }}

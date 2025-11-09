@@ -11,10 +11,7 @@ services:
     command: ./webapp --config /webapp/configs/webapp.yaml
     networks:
       - {{ app.name }}-net
-      - kafka-net
 
 networks:
   {{ app.name }}-net:
-    external: true
-  kafka-net:
     external: true
