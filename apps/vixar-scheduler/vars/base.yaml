@@ -16,17 +16,18 @@ app:
     # async_request_limit: 5
     user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
     headers:
-      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-      Accept-Language: "en-US,en;q=0.9"
-      Accept-Encoding: "gzip, deflate, br, zstd"
-      Connection: "keep-alive"
-  sites:
-    - https://www.coursera.org
-    - https://pkg.go.dev
-
-kafka:
-  max_retry: 5
-  brokers:
-    - kafka:9093
-  topic: scraper_data
+      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+      accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+      accept_language: "en-US,en;q=0.9"
+      accept_encoding: "gzip, deflate, br, zstd"
+      connection: "keep-alive"
+    sites:
+      - name: coursera
+        url: https://www.coursera.org
+      - name: go.dev
+        url: https://pkg.go.dev
+  kafka:
+    max_retry: 5
+    brokers:
+      - kafka:9093
+    topic: scraper_data

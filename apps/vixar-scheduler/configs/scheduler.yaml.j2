@@ -1,5 +1,5 @@
 scheduler:
-  cron_pattern: {{ app.scheduler.cron_pattern }}
+  cron_pattern: "{{ app.scheduler.cron_pattern }}"
   logger:
     loglvl: info
     mode: production
@@ -7,28 +7,29 @@ scheduler:
   scraper:
     output_every: {{ app.scraper.output_every }}
     max_depth: {{ app.scraper.max_depth }}
-    filter_pattern: {{ app.scraper.filter_pattern }}
+    filter_pattern: "{{ app.scraper.filter_pattern }}"
     tags_to_parse: {{ app.scraper.tags_to_parse }}
     is_async: {{ app.scraper.is_async }}
     # async_delay: 3s
     # async_request_limit: 5
     user_agent: "{{ app.scraper.user_agent }}"
     headers:
-      User-Agent: "{{ app.scraper.headers.User-Agent }}"
-      Accept: "{{ app.scraper.headers.Accept }}"
-      Accept-Language: "{{ app.scraper.headers.Accept-Language }}"
-      Accept-Encoding: "{{ app.scraper.headers.Accept-Encoding }}"
-      Connection: "{{ app.scraper.headers.Connection }}"
-  sites:
-  {% for site in app.sites %}
-    - {{ site }}
+      User-Agent: "{{ app.scraper.headers.user_agent }}"
+      Accept: "{{ app.scraper.headers.accept }}"
+      Accept-Language: "{{ app.scraper.headers.accept_language }}"
+      Accept-Encoding: "{{ app.scraper.headers.accept_encoding }}"
+      Connection: "{{ app.scraper.headers.connection }}"
+    sites:
+  {% for site in app.scraper.sites %}
+    - name: "{{ site.name }}"
+        url: "{{ site.url }}"
   {% endfor %}
 
 kafka:
-  max_retry: {{ kafka.max_retry }}
-  brokers:
-  {% for broker in kafka.brokers %}
-    - {{ broker }}
-  {% endfor %}
+  max_retry: {{ app.kafka.max_retry }}
   topics:
-    scraper_data: "{{ kafka.topic }}"
+    scraper_data: "{{ app.kafka.topic }}"
+  brokers:
+  {% for broker in app.kafka.brokers %}
+  - {{ broker }}
+  {% endfor %}
