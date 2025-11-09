@@ -18,6 +18,8 @@ services:
       timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - {{ app.name }}-net
 
 networks:
   {{ app.name }}-net:

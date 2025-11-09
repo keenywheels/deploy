@@ -4,7 +4,7 @@ services:
     container_name: {{ app.name }}
     restart: always
     ports:
-      - '8000:8000'
+      - '{{ app.http.port }}:{{ app.http.port }}'
     volumes:
       - /opt/apps/{{ app.name }}/configs:/vixarapi/configs
       - /opt/apps/{{ app.name }}/log:/vixarapi/log

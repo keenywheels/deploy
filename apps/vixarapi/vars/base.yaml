@@ -11,7 +11,6 @@ app:
     max_age: 24h
   scheduler:
     refresh_search_table_pattern: "0 8 * * *"
-
-postgres:
-  host: postgres
-  port: 5432
+  postgres:
+    host: postgres
+    port: 5432
