@@ -19,11 +19,11 @@ scheduler:
       Accept-Language: "{{ app.scraper.headers.accept_language }}"
       Accept-Encoding: "{{ app.scraper.headers.accept_encoding }}"
       Connection: "{{ app.scraper.headers.connection }}"
-    sites:
-  {% for site in app.scraper.sites %}
+  sites:
+{% for site in app.scraper.sites %}
     - name: "{{ site.name }}"
-        url: "{{ site.url }}"
-  {% endfor %}
+      url: "{{ site.url }}"
+{% endfor %}
 
 kafka:
   max_retry: {{ app.kafka.max_retry }}
