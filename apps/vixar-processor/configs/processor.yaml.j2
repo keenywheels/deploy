@@ -1,8 +1,20 @@
 app:
+  clients:
+    llm:
+      token: {{ app.clients.llm.token }}
+      url: {{ app.clients.llm.url }}
+      timeout: {{ app.clients.llm.timeout }}
   processor:
-    workers_count: 10
-    max_retries: 2
-    retry_delay: 10s
+    workers_count: {{ app.processor.workers_count }}
+    max_retries: {{ app.processor.max_retries }}
+    retry_delay: {{ app.processor.retry_delay }}
+  postgres:
+    host: {{ app.postgres.host }}
+    port: {{ app.postgres.port }}
+    user: {{ app.postgres.user }}
+    password: {{ app.postgres.password }}
+    dbname: {{ app.postgres.dbname }}
+    sslmode: {{ app.postgres.sslmode }}
   logger:
     loglvl: info
     mode: production
