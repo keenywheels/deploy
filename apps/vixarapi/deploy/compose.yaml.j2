@@ -12,7 +12,10 @@ services:
     command: ./vixarapi --config configs/vixarapi.yaml
     networks:
       - {{ app.name }}-net
+      - postgres-net
 
 networks:
   {{ app.name }}-net:
+    external: true
+  postgres-net:
     external: true
