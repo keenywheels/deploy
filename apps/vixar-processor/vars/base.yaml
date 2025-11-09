@@ -2,7 +2,18 @@ app:
   name: vixar-processor
   image:
     name: daronenko/vixar-processor
-    tag: 2e897910
+    tag: 2be5313e
+  clients:
+    llm:
+      url: "http://sntmnt:9999"
+      timeout: 1m
+  processor:
+    workers_count: 10
+    max_retries: 2
+    retry_delay: 10s
+  postgres:
+    host: postgres
+    port: 5432
   kafka:
     hostname: kafka
     port: 9093

@@ -1,19 +1,21 @@
 app:
   http:
-    port: "8000"
+    port: {{ app.http.port }}
   cors:
-    allow_origins: ["https://vixar.tech"]
-    allow_credentials: true
-    max_age: 24h
+    allow_origins: {{ app.cors.allow_origins }}
+    allow_credentials: {{ app.cors.allow_credentials }}
+    max_age: {{ app.cors.max_age }}
   logger:
     loglvl: info
     mode: production
     encoding: json
+  scheduler:
+    refresh_search_table_pattern: {{ app.scheduler.refresh_search_table_pattern }}
 
 postgres:
-  host: localhost
-  port: 5432
-  user: user
-  password: password
-  database: db
-  sslmode: disable
+  host: {{ app.postgres.host }}
+  port: {{ app.postgres.port }}
+  user: {{ app.postgres.user }}
+  password: {{ app.postgres.password }}
+  dbname: {{ app.postgres.dbname }}
+  sslmode: {{ app.postgres.sslmode }}

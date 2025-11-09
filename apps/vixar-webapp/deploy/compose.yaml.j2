@@ -3,18 +3,16 @@ services:
     image: {{ app.image.name }}:{{ app.image.tag }}
     container_name: {{ app.name }}
     restart: always
+    mem_limit: 512m
     ports:
-      - "{{ app.port }}:{{ app.port }}"
+      - "{{ app.http.port }}:{{ app.http.port }}"
     volumes:
       - /opt/apps/{{ app.name }}/configs/webapp.yaml:/webapp/configs/webapp.yaml:ro
       - /var/log/{{ app.name }}:/{{ app.name }}/log
     command: ./webapp --config /webapp/configs/webapp.yaml
     networks:
       - {{ app.name }}-net
-      - kafka-net
 
 networks:
   {{ app.name }}-net:
-    external: true
-  kafka-net:
     external: true

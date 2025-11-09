@@ -1,33 +1,35 @@
 scheduler:
-  cron_pattern: "0 0 1 1 *"
+  cron_pattern: "{{ app.scheduler.cron_pattern }}"
   logger:
     loglvl: info
     mode: production
     encoding: json
   scraper:
-    output_every: 10000
-    max_depth: 5
-    filter_pattern: "^[A-Za-zА-Яа-яЁё]+$"
-    tags_to_parse: ["div", "span", "p", "a", "h1", "h2", "h3", "h4", "h5", "h6"]
-    is_async: false
+    output_every: {{ app.scraper.output_every }}
+    max_depth: {{ app.scraper.max_depth }}
+    filter_pattern: "{{ app.scraper.filter_pattern }}"
+    tags_to_parse: {{ app.scraper.tags_to_parse }}
+    is_async: {{ app.scraper.is_async }}
     # async_delay: 3s
     # async_request_limit: 5
-    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    user_agent: "{{ app.scraper.user_agent }}"
     headers:
-      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-      Accept-Language: "en-US,en;q=0.9"
-      Accept-Encoding: "gzip, deflate, br, zstd"
-      Connection: "keep-alive"
+      User-Agent: "{{ app.scraper.headers.user_agent }}"
+      Accept: "{{ app.scraper.headers.accept }}"
+      Accept-Language: "{{ app.scraper.headers.accept_language }}"
+      Accept-Encoding: "{{ app.scraper.headers.accept_encoding }}"
+      Connection: "{{ app.scraper.headers.connection }}"
   sites:
-    - https://www.coursera.org
-    - https://pkg.go.dev
+{% for site in app.scraper.sites %}
+    - name: "{{ site.name }}"
+      url: "{{ site.url }}"
+{% endfor %}
 
 kafka:
-  max_retry: 5
-  brokers:
-{% for broker in app.kafka.brokers %}
-    - {{ broker }}
-{% endfor %}
+  max_retry: {{ app.kafka.max_retry }}
   topics:
     scraper_data: "{{ app.kafka.topic }}"
+  brokers:
+  {% for broker in app.kafka.brokers %}
+  - {{ broker }}
+  {% endfor %}

@@ -2,4 +2,15 @@ app:
   name: vixarapi
   image:
     name: daronenko/vixarapi
-    tag: 5315fe06
+    tag: 2be5313e
+  http:
+    port: "8000"
+  cors:
+    allow_origins: ["https://vixar.tech"]
+    allow_credentials: true
+    max_age: 24h
+  scheduler:
+    refresh_search_table_pattern: "0 8 * * *"
+  postgres:
+    host: postgres
+    port: 5432

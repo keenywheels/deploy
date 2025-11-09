@@ -3,8 +3,9 @@ services:
     image: {{ app.image.name }}:{{ app.image.tag }}
     container_name: {{ app.name }}
     restart: always
+    mem_limit: 1g
     ports:
-      - '8000:8000'
+      - '{{ app.http.port }}:{{ app.http.port }}'
     volumes:
       - /opt/apps/{{ app.name }}/configs:/vixarapi/configs
       - /opt/apps/{{ app.name }}/log:/vixarapi/log
@@ -12,7 +13,10 @@ services:
     command: ./vixarapi --config configs/vixarapi.yaml
     networks:
       - {{ app.name }}-net
+      - postgres-net
 
 networks:
   {{ app.name }}-net:
+    external: true
+  postgres-net:
     external: true

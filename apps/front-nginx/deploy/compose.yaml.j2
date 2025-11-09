@@ -3,6 +3,7 @@ services:
     image: {{ app.image.name }}:{{ app.image.tag }}
     container_name: {{ app.name }}
     restart: always
+    mem_limit: 512m
     ports:
       - '80:80'
       - '443:443'
