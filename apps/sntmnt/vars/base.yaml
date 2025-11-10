@@ -2,5 +2,5 @@ app:
   name: sntmnt
   image:
     name: daronenko/sntmnt
-    tag: ab9463ac
+    tag: 005a01f8
   port: 9999
