@@ -2,6 +2,6 @@ app:
   name: vixar-webapp
   image:
     name: daronenko/vixar-webapp
-    tag: db92d69a
+    tag: fdae5c42
   http:
     port: 8008
