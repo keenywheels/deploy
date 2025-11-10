@@ -20,7 +20,7 @@ scheduler:
       Accept-Encoding: "{{ app.scraper.headers.accept_encoding }}"
       Connection: "{{ app.scraper.headers.connection }}"
   sites:
-{% for site in app.scraper.sites %}
+{% for site in app.sites %}
     - name: "{{ site.name }}"
       url: "{{ site.url }}"
 {% endfor %}
